@@ -1,0 +1,14 @@
+http:
+  image: nginx:latest
+  ports:
+    - "8080:80"
+  volumes:
+    - ./app:/app
+    - ./conf/http/cleaning-robot.conf:/etc/nginx/conf.d/cleaning-robot.conf
+  links:
+    - php-fpm
+
+php-fpm:
+  image: php:7.2-fpm
+  volumes:
+    - ./app:/app
