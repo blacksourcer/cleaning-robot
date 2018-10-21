@@ -1,14 +1,20 @@
-http:
-  image: nginx:latest
-  ports:
-    - "8080:80"
-  volumes:
-    - ./app:/app
-    - ./conf/http/cleaning-robot.conf:/etc/nginx/conf.d/cleaning-robot.conf
-  links:
-    - php-fpm
+version: '2'
+services:
 
-php-fpm:
-  image: php:7.2-fpm
-  volumes:
-    - ./app:/app
+  # The Application
+  app:
+    build:
+      context: ./docker/app
+    working_dir: /var/www
+    volumes:
+    - ./src:/var/www
+
+  # The Web Server
+  nginx:
+    build:
+      context: ./docker/nginx
+    working_dir: /var/www
+    volumes_from:
+    - app
+    ports:
+    - 8080:80
