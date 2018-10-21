@@ -9,6 +9,5 @@
 */
 
 $router->get('/', 'IndexController@index');
-$router->get('/error', 'IndexController@error');
 
-//$router->post('/robot/clean')
+$router->post('/robot/clean', 'RobotController@clean');

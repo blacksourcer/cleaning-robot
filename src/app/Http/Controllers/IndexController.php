@@ -9,14 +9,11 @@ namespace App\Http\Controllers;
  */
 class IndexController extends Controller
 {
-
+    /**
+     * @return string
+     */
     public function index()
     {
         return app()->version();
-    }
-
-    public function error()
-    {
-        throw new \RuntimeException("Test");
     }
 }

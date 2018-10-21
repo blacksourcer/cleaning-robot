@@ -1,11 +1,15 @@
-version: '2'
+version: '3'
 services:
 
   # The Application
   app:
     build:
       context: ./docker/app
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
     working_dir: /var/www
+    user: "${UID:-1000}:${GID:-1000}"
     volumes:
     - ./src:/var/www
 
@@ -14,7 +18,7 @@ services:
     build:
       context: ./docker/nginx
     working_dir: /var/www
-    volumes_from:
-    - app
+    volumes:
+    - ./src:/var/www
     ports:
     - 8080:80
