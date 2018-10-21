@@ -1,16 +1,17 @@
 <?php
 
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
+namespace App\Tests\Feature;
 
-class ExampleTest extends TestCase
+use App\Tests\TestCase;
+
+class ApiTest extends TestCase
 {
     /**
      * A basic test example.
      *
      * @return void
      */
-    public function testExample()
+    public function testIndex()
     {
         $this->get('/');
 
