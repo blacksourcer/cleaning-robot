@@ -2,35 +2,65 @@
 
 namespace App\Components\Robot\Program;
 
+use App\Types\Enum;
+
 /**
  * Class Instruction
  *
+ * @method static parse($value):Instruction
+ *
  * @package App\Components\Robot\Program
  */
-class Instruction
+class Instruction extends Enum
 {
-    const TURN_LEFT = "TL";
-
-    const TURN_RIGHT = "TR";
-
-    const ADVANCE = "A";
-
-    const BACK = "B";
-
-    const CLEAN = "C";
+    /**
+     * @var string[]
+     */
+    protected static $values = [
+        "TL",
+        "TR",
+        "A",
+        "B",
+        "C",
+    ];
 
     /**
-     * @param string $instruction
-     * @return bool
+     * @return Instruction
      */
-    public static function isValid(string $instruction): bool
+    public static function turnLeft(): Instruction
     {
-        return in_array($instruction, [
-            self::TURN_LEFT,
-            self::TURN_RIGHT,
-            self::ADVANCE,
-            self::BACK,
-            self::CLEAN,
-        ]);
+        return static::parse("TL");
+    }
+
+    /**
+     * @return Instruction
+     */
+    public static function turnRight(): Instruction
+    {
+        return static::parse("TR");
+    }
+
+    /**
+     * @return Instruction
+     */
+    public static function advance(): Instruction
+    {
+        return static::parse("A");
+    }
+
+    /**
+     * @return Instruction
+     */
+    public static function back(): Instruction
+    {
+        return static::parse("B");
+    }
+
+    /**
+     * @return Instruction
+     */
+    public static function clean(): Instruction
+    {
+        return static::parse("C");
     }
 }

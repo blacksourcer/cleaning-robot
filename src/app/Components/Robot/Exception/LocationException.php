@@ -9,7 +9,7 @@ use App\Components\Robot\Exception;
  *
  * @package App\Components\Robot\Exception
  */
-class PlacementException extends Exception
+class LocationException extends Exception
 {
 
 }

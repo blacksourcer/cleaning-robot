@@ -4,10 +4,11 @@ namespace App\Components;
 
 use App\Components\Robot\Map;
 use App\Components\Robot\Location;
+use App\Components\Robot\Direction;
 use App\Components\Robot\Program;
-use App\Components\Robot\Result;
 
-use App\Components\Robot\Exception;
+use App\Components\Robot\Exception\BatteryException;
+use App\Components\Robot\Exception\LocationException;
 
 /**
  * Interface RobotInterface
@@ -27,32 +28,44 @@ interface RobotInterface
     public function getLocation(): Location;
 
     /**
-     * @return string
+     * @return Direction
      */
-    public function getDirection(): string;
+    public function getDirection(): Direction;
+
+    /**
+     * @return Location[]
+     */
+    public function getVisited(): array;
+
+    /**
+     * @return Location[]
+     */
+    public function getCleaned(): array;
 
     /**
      * @param int $battery
      *
      * @return RobotInterface
      *
-     * @throws Exception
+     * @throws BatteryException
      */
     public function charge(int $battery): RobotInterface;
 
     /**
      * @param Map $map
      * @param Location $location
-     * @param string $direction
+     * @param Direction $direction
      *
      * @return RobotInterface
+     *
+     * @throws LocationException
      */
-    public function place(Map $map, Location $location, string $direction): RobotInterface;
+    public function place(Map $map, Location $location, Direction $direction): RobotInterface;
 
     /**
      * @param Program $program
      *
-     * @return Result
+     * @return void
      */
-    public function start(Program $program): Result;
+    public function run(Program $program);
 }

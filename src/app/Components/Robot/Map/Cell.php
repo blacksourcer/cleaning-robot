@@ -2,26 +2,38 @@
 
 namespace App\Components\Robot\Map;
 
+use App\Types\Enum;
+
 /**
  * Class Cell
  *
+ * @method static parse($value):Cell
+ *
  * @package App\Components\Robot\Map
  */
-class Cell
+class Cell extends Enum
 {
-    const SPACE = "S";
-
-    const COLUMN = "C";
+    /**
+     * @var string[]
+     */
+    protected static $values = [
+        "S",
+        "C",
+    ];
 
     /**
-     * @param string $cell
-     * @return bool
+     * @return Cell
      */
-    public static function isValid(string $cell): bool
+    public static function space(): Cell
     {
-        return in_array($cell, [
-            self::SPACE,
-            self::COLUMN,
-        ]);
+        return static::parse("S");
+    }
+
+    /**
+     * @return Cell
+     */
+    public static function column(): Cell
+    {
+        return static::parse("C");
     }
 }

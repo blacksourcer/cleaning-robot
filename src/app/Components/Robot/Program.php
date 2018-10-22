@@ -4,8 +4,6 @@ namespace App\Components\Robot;
 
 use App\Components\Robot\Program\Instruction;
 
-use App\Components\Robot\Program\Exception as ProgramException;
-
 /**
  * Class Program
  *
@@ -21,36 +19,17 @@ class Program implements \Iterator
     /**
      * Program constructor
      *
-     * @param string[] $instructions
-     *
-     * @throws ProgramException
+     * @param Instruction[] $instructions
      */
     public function __construct(array $instructions)
     {
-        foreach ($instructions as $instruction) {
-            if (!Instruction::isValid($instruction)) {
-                throw new ProgramException("Invalid instruction \"$instruction\"");
-            }
-        }
-
         $this->instructions = $instructions;
-    }
-
-    /**
-     * @param int $row
-     * @param int $column
-     *
-     * @return null|string
-     */
-    public function getCell(int $row, int $column): ?string
-    {
-        return $this->data[$row][$column] ?? null;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function current()
+    public function current(): ?Instruction
     {
         return current($this->instructions);
     }

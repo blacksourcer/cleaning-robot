@@ -4,8 +4,6 @@ namespace App\Components\Robot;
 
 use App\Components\Robot\Map\Cell;
 
-use App\Components\Robot\Map\Exception as MapException;
-
 /**
  * Class Map
  *
@@ -14,38 +12,28 @@ use App\Components\Robot\Map\Exception as MapException;
 class Map
 {
     /**
-     * @var string[][]
+     * @var Cell[][]
      */
-    private $data;
+    private $cells;
 
     /**
      * Map constructor
      *
-     * @param string[][] $data
-     *
-     * @throws MapException
+     * @param Cell[][] $cells
      */
-    public function __construct(array $data)
+    public function __construct(array $cells)
     {
-        foreach ($data as $row) {
-            foreach ($row as $cell) {
-                if ((null !== $cell) && !Cell::isValid($cell)) {
-                    throw new MapException("Invalid cell value \"$cell\"");
-                }
-            }
-        }
-
-        $this->data = $data;
+        $this->cells = $cells;
     }
 
     /**
      * @param int $row
      * @param int $column
      *
-     * @return null|string
+     * @return Cell|null
      */
-    public function getCell(int $row, int $column): ?string
+    public function getCell(int $row, int $column): ?Cell
     {
-        return $this->data[$row][$column] ?? null;
+        return $this->cells[$row][$column] ?? null;
     }
 }

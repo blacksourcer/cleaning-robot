@@ -2,8 +2,6 @@
 
 namespace App\Components\Robot;
 
-use App\Components\Robot\Location\Exception as LocationException;
-
 /**
  * Class Location
  *
@@ -26,8 +24,6 @@ class Location
      *
      * @param int $x
      * @param int $y
-     *
-     * @throws LocationException
      */
     public function __construct(int $x, int $y)
     {
@@ -47,14 +43,9 @@ class Location
      * @param int $x
      *
      * @return Location
-     *
-     * @throws LocationException
      */
-    public function setX(int $x): self
+    public function setX(int $x): Location
     {
-        if ($x < 0) {
-            throw new LocationException("X must be >= 0");
-        }
 
         $this->x = $x;
 
@@ -73,17 +64,43 @@ class Location
      * @param int $y
      *
      * @return Location
-     *
-     * @throws LocationException
      */
-    public function setY(int $y): self
+    public function setY(int $y): Location
     {
-        if ($y < 0) {
-            throw new LocationException("Y must be >= 0");
-        }
-
         $this->y = $y;
 
         return $this;
+    }
+
+    /**
+     * @return Location
+     */
+    public function up(): Location
+    {
+        return new Location($this->getX(), $this->getY() - 1);
+    }
+
+    /**
+     * @return Location
+     */
+    public function right(): Location
+    {
+        return new Location($this->getX() + 1, $this->getY());
+    }
+
+    /**
+     * @return Location
+     */
+    public function down(): Location
+    {
+        return new Location($this->getX(), $this->getY() + 1);
+    }
+
+    /**
+     * @return Location
+     */
+    public function left(): Location
+    {
+        return new Location($this->getX() - 1, $this->getY());
     }
 }
