@@ -4,6 +4,7 @@ namespace App\Tests\Unit\Components;
 
 use App\Components\Robot;
 
+use App\Components\Robot\Program;
 use App\Tests\TestCase;
 
 /**
@@ -226,7 +227,6 @@ class RobotTest extends TestCase
 
         $this->assertEquals(new Robot\Location(1, 0), $robot->getLocation());
         $this->assertEquals(Robot\Direction::north(), $robot->getDirection());
-        $this->assertEquals(new Robot\Location(1, 0), $robot->getLocation());
         $this->assertEquals([new Robot\Location(0, 0), new Robot\Location(1, 0)], $robot->getVisited());
         $this->assertEquals([ new Robot\Location(1, 0)], $robot->getCleaned());
         $this->assertEquals(1, $robot->getBattery());
@@ -248,5 +248,146 @@ class RobotTest extends TestCase
         $robot->run(new Robot\Program([
             Robot\Program\Instruction::turnRight(),
         ]));
+    }
+
+    /**
+     * @covers Robot::run
+     *
+     * @return void
+     *
+     * @throws \Throwable
+     */
+    public function testRunLocationFailure()
+    {
+        $robot = new Robot();
+
+        $this->expectException(Robot\Exception\LocationException::class);
+
+        $robot
+            ->charge(10)
+            ->place(
+                new Robot\Map([
+                    [Robot\Map\Cell::space()],
+                ]),
+                new Robot\Location(0, 0),
+                Robot\Direction::north()
+            )
+            ->run(new Robot\Program([
+                Robot\Program\Instruction::advance(),
+            ]));
+    }
+
+    /**
+     * @covers Robot::run
+     *
+     * @return void
+     *
+     * @throws \Throwable
+     */
+    public function testRunBatteryFailure()
+    {
+        $robot = new Robot();
+
+        $this->expectException(Robot\Exception\BatteryException::class);
+
+        $robot
+            ->charge(1)
+            ->place(
+                new Robot\Map([
+                    [Robot\Map\Cell::space()],
+                ]),
+                new Robot\Location(0, 0),
+                Robot\Direction::north()
+            )
+            ->run(new Robot\Program([
+                Robot\Program\Instruction::clean(),
+            ]));
+    }
+
+    /**
+     * @covers Robot::run
+     *
+     * @return void
+     *
+     * @throws \Throwable
+     */
+    public function testRunBack()
+    {
+        $robot = new Robot();
+
+        $this->expectException(Robot\Exception::class);
+
+        $robot
+            ->charge(1)
+            ->place(
+                new Robot\Map([
+                    [Robot\Map\Cell::space()],
+                ]),
+                new Robot\Location(0, 0),
+                Robot\Direction::north()
+            )
+            ->run(new Robot\Program([
+                Robot\Program\Instruction::back(),
+            ]));
+    }
+
+    /**
+     * @covers Robot::run
+     *
+     * @return void
+     *
+     * @throws \Throwable
+     */
+    public function testRunAvoidance()
+    {
+        $nextStrategyMock = $this->createMock(Robot\StrategyInterface::class);
+
+        $nextStrategyMock
+            ->expects($this->once())
+            ->method('getProgram')
+            ->willReturn(
+                new Program([
+                    Program\Instruction::back(), Program\Instruction::turnRight(), Program\Instruction::advance(),
+                ])
+            );
+
+        $strategyMock = $this->createMock(Robot\StrategyInterface::class);
+
+        $strategyMock
+            ->expects($this->once())
+            ->method('getProgram')
+            ->willReturn(
+                new Program([
+                    Program\Instruction::turnLeft(), Program\Instruction::advance(),
+                ])
+            );
+
+        $strategyMock
+            ->expects($this->once())
+            ->method('getNext')
+            ->willReturn($nextStrategyMock);
+
+        $robot = new Robot($strategyMock);
+
+        $robot
+            ->charge(10)
+            ->place(
+                new Robot\Map([
+                    [Robot\Map\Cell::space(), Robot\Map\Cell::column(), Robot\Map\Cell::space()],
+                    [Robot\Map\Cell::column(), Robot\Map\Cell::space(), Robot\Map\Cell::space()],
+                    [Robot\Map\Cell::space(), Robot\Map\Cell::space(), Robot\Map\Cell::space()],
+                ]),
+                new Robot\Location(1, 1),
+                Robot\Direction::north()
+            )
+            ->run(new Robot\Program([
+                Robot\Program\Instruction::advance(),
+            ]));
+
+        $this->assertEquals(new Robot\Location(2, 0), $robot->getLocation());
+        $this->assertEquals(Robot\Direction::north(), $robot->getDirection());
+        $this->assertEquals([new Robot\Location(1, 1), new Robot\Location(2, 1), new Robot\Location(2, 0)], $robot->getVisited());
+        $this->assertEquals([], $robot->getCleaned());
+        $this->assertEquals(3, $robot->getBattery());
     }
 }

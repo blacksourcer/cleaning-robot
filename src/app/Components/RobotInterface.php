@@ -65,7 +65,10 @@ interface RobotInterface
     /**
      * @param Program $program
      *
-     * @return void
+     * @return RobotInterface
+     *
+     * @throws BatteryException
+     * @throws LocationException
      */
-    public function run(Program $program);
+    public function run(Program $program): RobotInterface;
 }

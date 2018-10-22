@@ -2,15 +2,17 @@
 
 namespace App\Components;
 
-use App\Components\Robot\Direction;
-use App\Components\Robot\Location;
 use App\Components\Robot\Map;
+use App\Components\Robot\Location;
+use App\Components\Robot\Direction;
 use App\Components\Robot\Program;
 
+use App\Components\Robot\Exception;
+use App\Components\Robot\RuntimeException;
 use App\Components\Robot\Exception\StateException;
 use App\Components\Robot\Exception\LocationException;
 use App\Components\Robot\Exception\BatteryException;
-use App\Components\Robot\RuntimeException;
+use App\Components\Robot\StrategyInterface;
 
 /**
  * Class Robot
@@ -56,6 +58,11 @@ class Robot implements RobotInterface
      * @var Location[]
      */
     private $cleaned = [];
+
+    /**
+     * @var StrategyInterface|null
+     */
+    private $avoidanceStrategy;
 
     /**
      * @param int $battery
@@ -215,6 +222,37 @@ class Robot implements RobotInterface
      * @return RobotInterface
      *
      * @throws BatteryException
+     * @throws LocationException
+     */
+    protected function back(): RobotInterface
+    {
+        switch ($this->getDirection()) {
+            case Direction::north():
+                $this->setLocation($this->getLocation()->down());
+                break;
+
+            case Direction::east():
+                $this->setLocation($this->getLocation()->left());
+                break;
+
+            case Direction::south():
+                $this->setLocation($this->getLocation()->up());
+                break;
+
+            case Direction::west():
+                $this->setLocation($this->getLocation()->right());
+                break;
+        }
+
+        return $this
+            ->addVisited($this->getLocation())
+            ->drainBattery(self::BATTERY_DRAIN_BACK);
+    }
+
+    /**
+     * @return RobotInterface
+     *
+     * @throws BatteryException
      */
     protected function clean(): RobotInterface
     {
@@ -244,6 +282,9 @@ class Robot implements RobotInterface
             case Program\Instruction::advance():
                 return $this->advance();
 
+            case Program\Instruction::back():
+                return $this->back();
+
             case Program\Instruction::clean():
                 return $this->clean();
         }
@@ -252,10 +293,38 @@ class Robot implements RobotInterface
     }
 
     /**
-     * Robot constructor
+     * @param StrategyInterface $strategy
+     *
+     * @return Robot
+     *
+     * @throws BatteryException
+     * @throws LocationException
      */
-    public function __construct()
+    protected function backOff(StrategyInterface $strategy): self
     {
+        try {
+            foreach ($strategy->getProgram() as $instruction) {
+                $this->execute($instruction);
+            }
+        } catch (LocationException $ex) {
+            if ($nextStrategy = $strategy->getNext()) {
+                return $this->backOff($nextStrategy);
+            }
+
+            throw $ex;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Robot constructor
+     *
+     * @param StrategyInterface|null $avoidanceStrategy
+     */
+    public function __construct(StrategyInterface $avoidanceStrategy = null)
+    {
+        $this->avoidanceStrategy = $avoidanceStrategy;
     }
 
     /**
@@ -323,6 +392,14 @@ class Robot implements RobotInterface
     }
 
     /**
+     * @return StrategyInterface|null
+     */
+    public function getAvoidanceStrategy(): ?StrategyInterface
+    {
+        return $this->avoidanceStrategy;
+    }
+
+    /**
      * @param int $battery
      *
      * @return RobotInterface
@@ -357,11 +434,28 @@ class Robot implements RobotInterface
      *
      * @throws BatteryException
      * @throws LocationException
+     * @throws Exception
+     *
+     * @return RobotInterface
      */
-    public function run(Program $program)
+    public function run(Program $program): RobotInterface
     {
         foreach ($program as $instruction) {
-            $this->execute($instruction);
+            if ($instruction === Program\Instruction::back()) {
+                throw new Exception("The robot cannot go back");
+            }
+
+            try {
+                $this->execute($instruction);
+            } catch (LocationException $ex) {
+                if ($strategy = $this->getAvoidanceStrategy()) {
+                    return $this->backOff($strategy);
+                }
+
+                throw $ex;
+            }
         }
+
+        return $this;
     }
 }
