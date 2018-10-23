@@ -1,21 +1,22 @@
 <?php
 
-namespace App\Components\Helpers;
+namespace App\Components\Robot\Helpers;
 
-use App\Components\Robot\Direction;
-use App\Components\Robot\Location;
 use App\Components\Robot\Map;
-
+use App\Components\Robot\Location;
+use App\Components\Robot\Direction;
 use App\Components\Robot\Program;
+
 use App\Components\RobotInterface;
+
 use App\Exceptions\ParseException;
 
 /**
- * Class Robot
+ * Class File
  *
- * @package App\Components\Helpers
+ * @package App\Components\Robot\Helpers
  */
-class Robot
+class File
 {
     /**
      * @param array $rawData

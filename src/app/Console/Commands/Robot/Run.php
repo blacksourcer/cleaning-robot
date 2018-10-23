@@ -3,7 +3,7 @@
 namespace App\Console\Commands\Robot;
 
 use App\Components\Robot;
-use App\Components\Helpers\Robot as RobotHelper;
+use App\Components\Robot\Helpers\File as RobotFileHelper;
 
 use App\Exceptions\ParseException;
 
@@ -77,14 +77,14 @@ class Run extends Command
 
         try {
             $robot
-                ->charge(RobotHelper::parseBattery($source))
+                ->charge(RobotFileHelper::parseBattery($source))
                 ->place(
-                    RobotHelper::parseMap($source),
-                    RobotHelper::parseStartLocation($source),
-                    RobotHelper::parseStartDirection($source)
+                    RobotFileHelper::parseMap($source),
+                    RobotFileHelper::parseStartLocation($source),
+                    RobotFileHelper::parseStartDirection($source)
                 );
 
-            $program = RobotHelper::parseProgram($source);
+            $program = RobotFileHelper::parseProgram($source);
         } catch (ParseException $ex) {
             $this->error("Failed to parse input at \"$sourceFile\": {$ex->getMessage()}");
             return;
@@ -104,7 +104,7 @@ class Run extends Command
             return;
         }
 
-        $result = \json_encode(RobotHelper::dumpRobotStats($robot));
+        $result = \json_encode(RobotFileHelper::dumpRobotStats($robot));
 
         if (!\file_put_contents($resultFile, $result)) {
             $this->error("Failed to write result to \"$resultFile\"");

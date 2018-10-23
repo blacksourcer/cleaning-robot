@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Components\Robot;
-use App\Components\Helpers\Robot as RobotHelper;
+use App\Components\Robot\Helpers\File as RobotFileHelper;
 
 use App\Exceptions\ParseException;
 
@@ -69,14 +69,14 @@ class RobotController extends Controller
 
         try {
             $robot
-                ->charge(RobotHelper::parseBattery($data))
+                ->charge(RobotFileHelper::parseBattery($data))
                 ->place(
-                    RobotHelper::parseMap($data),
-                    RobotHelper::parseStartLocation($data),
-                    RobotHelper::parseStartDirection($data)
+                    RobotFileHelper::parseMap($data),
+                    RobotFileHelper::parseStartLocation($data),
+                    RobotFileHelper::parseStartDirection($data)
                 );
 
-            $program = RobotHelper::parseProgram($data);
+            $program = RobotFileHelper::parseProgram($data);
         } catch (ParseException $ex) {
             return $this->badRequest("Failed to parse the request: {$ex->getMessage()}");
         } catch (Robot\Exceptions\BatteryException | Robot\Exceptions\LocationException $ex) {
@@ -91,7 +91,7 @@ class RobotController extends Controller
             return response()->make("Generic error: {$ex->getMessage()}", 500);
         }
 
-        return response()->json(RobotHelper::dumpRobotStats($robot));
+        return response()->json(RobotFileHelper::dumpRobotStats($robot));
     }
 
     #endregion
