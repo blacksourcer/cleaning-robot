@@ -27,13 +27,13 @@ class Map
     }
 
     /**
-     * @param int $row
-     * @param int $column
+     * @param int $x
+     * @param int $y
      *
      * @return Cell|null
      */
-    public function getCell(int $row, int $column): ?Cell
+    public function getCell(int $x, int $y): ?Cell
     {
-        return $this->cells[$row][$column] ?? null;
+        return $this->cells[$y][$x] ?? null;
     }
 }

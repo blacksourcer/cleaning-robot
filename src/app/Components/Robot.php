@@ -147,7 +147,7 @@ class Robot implements RobotInterface
      */
     protected function addVisited(Location $location): self
     {
-        $this->visited[] = $location;
+        $this->visited["{$location->getX()}:{$location->getY()}"] = $location;
 
         return $this;
     }
@@ -159,7 +159,7 @@ class Robot implements RobotInterface
      */
     protected function addCleaned(Location $location): self
     {
-        $this->cleaned[] = $location;
+        $this->cleaned["{$location->getX()}:{$location->getY()}"] = $location;
 
         return $this;
     }
@@ -172,8 +172,8 @@ class Robot implements RobotInterface
     protected function turnLeft(): RobotInterface
     {
         return $this
-            ->setDirection($this->getDirection()->getCounterClockwise())
-            ->drainBattery(self::BATTERY_DRAIN_TURN);
+            ->drainBattery(self::BATTERY_DRAIN_TURN)
+            ->setDirection($this->getDirection()->getCounterClockwise());
     }
 
     /**
@@ -184,8 +184,8 @@ class Robot implements RobotInterface
     protected function turnRight(): RobotInterface
     {
         return $this
-            ->setDirection($this->getDirection()->getClockwise())
-            ->drainBattery(self::BATTERY_DRAIN_TURN);
+            ->drainBattery(self::BATTERY_DRAIN_TURN)
+            ->setDirection($this->getDirection()->getClockwise());
     }
 
     /**
@@ -196,6 +196,8 @@ class Robot implements RobotInterface
      */
     protected function advance(): RobotInterface
     {
+        $this->drainBattery(self::BATTERY_DRAIN_ADVANCE);
+
         switch ($this->getDirection()) {
             case Direction::north():
                 $this->setLocation($this->getLocation()->up());
@@ -215,8 +217,7 @@ class Robot implements RobotInterface
         }
 
         return $this
-            ->addVisited($this->getLocation())
-            ->drainBattery(self::BATTERY_DRAIN_ADVANCE);
+            ->addVisited($this->getLocation());
     }
 
     /**
@@ -227,6 +228,8 @@ class Robot implements RobotInterface
      */
     protected function back(): RobotInterface
     {
+        $this->drainBattery(self::BATTERY_DRAIN_BACK);
+
         switch ($this->getDirection()) {
             case Direction::north():
                 $this->setLocation($this->getLocation()->down());
@@ -246,8 +249,7 @@ class Robot implements RobotInterface
         }
 
         return $this
-            ->addVisited($this->getLocation())
-            ->drainBattery(self::BATTERY_DRAIN_BACK);
+            ->addVisited($this->getLocation());
     }
 
     /**
@@ -258,8 +260,8 @@ class Robot implements RobotInterface
     protected function clean(): RobotInterface
     {
         return $this
-            ->addCleaned($this->getLocation())
-            ->drainBattery(self::BATTERY_DRAIN_CLEAN);
+            ->drainBattery(self::BATTERY_DRAIN_CLEAN)
+            ->addCleaned($this->getLocation());
     }
 
     /**
@@ -381,7 +383,7 @@ class Robot implements RobotInterface
      */
     public function getVisited(): array
     {
-        return $this->visited;
+        return array_values($this->visited);
     }
 
     /**
@@ -389,7 +391,7 @@ class Robot implements RobotInterface
      */
     public function getCleaned(): array
     {
-        return $this->cleaned;
+        return array_values($this->cleaned);
     }
 
     /**
@@ -449,11 +451,11 @@ class Robot implements RobotInterface
             try {
                 $this->execute($instruction);
             } catch (LocationException $ex) {
-                if ($strategy = $this->getAvoidanceStrategy()) {
-                    return $this->backOff($strategy);
+                if (!$strategy = $this->getAvoidanceStrategy()) {
+                    throw $ex;
                 }
 
-                throw $ex;
+                $this->backOff($strategy);
             }
         }
 

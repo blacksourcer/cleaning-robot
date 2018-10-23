@@ -42,7 +42,7 @@ class RobotTest extends TestCase
     {
         $robot = new Robot();
 
-        $this->expectException(Robot\Exception\BatteryException::class);
+        $this->expectException(Robot\Exceptions\BatteryException::class);
 
         $robot->charge(-10);
     }
@@ -56,7 +56,7 @@ class RobotTest extends TestCase
     {
         $robot = new Robot();
 
-        $this->expectException(Robot\Exception\StateException::class);
+        $this->expectException(Robot\Exceptions\StateException::class);
 
         $robot->getBattery();
     }
@@ -98,7 +98,7 @@ class RobotTest extends TestCase
     {
         $robot = new Robot();
 
-        $this->expectException(Robot\Exception\LocationException::class);
+        $this->expectException(Robot\Exceptions\LocationException::class);
 
         $robot->place(
             new Robot\Map([
@@ -121,7 +121,7 @@ class RobotTest extends TestCase
     {
         $robot = new Robot();
 
-        $this->expectException(Robot\Exception\LocationException::class);
+        $this->expectException(Robot\Exceptions\LocationException::class);
 
         $robot->place(
             new Robot\Map([
@@ -144,7 +144,7 @@ class RobotTest extends TestCase
     {
         $robot = new Robot();
 
-        $this->expectException(Robot\Exception\StateException::class);
+        $this->expectException(Robot\Exceptions\StateException::class);
 
         $robot->getLocation();
     }
@@ -160,7 +160,7 @@ class RobotTest extends TestCase
     {
         $robot = new Robot();
 
-        $this->expectException(Robot\Exception\StateException::class);
+        $this->expectException(Robot\Exceptions\StateException::class);
 
         $robot->getLocation();
     }
@@ -243,7 +243,7 @@ class RobotTest extends TestCase
     {
         $robot = new Robot();
 
-        $this->expectException(Robot\Exception\StateException::class);
+        $this->expectException(Robot\Exceptions\StateException::class);
 
         $robot->run(new Robot\Program([
             Robot\Program\Instruction::turnRight(),
@@ -261,7 +261,7 @@ class RobotTest extends TestCase
     {
         $robot = new Robot();
 
-        $this->expectException(Robot\Exception\LocationException::class);
+        $this->expectException(Robot\Exceptions\LocationException::class);
 
         $robot
             ->charge(10)
@@ -288,7 +288,7 @@ class RobotTest extends TestCase
     {
         $robot = new Robot();
 
-        $this->expectException(Robot\Exception\BatteryException::class);
+        $this->expectException(Robot\Exceptions\BatteryException::class);
 
         $robot
             ->charge(1)
@@ -315,7 +315,7 @@ class RobotTest extends TestCase
     {
         $robot = new Robot();
 
-        $this->expectException(Robot\Exception::class);
+        $this->expectException(Robot\Exceptions\Exception::class);
 
         $robot
             ->charge(1)
@@ -370,7 +370,7 @@ class RobotTest extends TestCase
         $robot = new Robot($strategyMock);
 
         $robot
-            ->charge(10)
+            ->charge(15)
             ->place(
                 new Robot\Map([
                     [Robot\Map\Cell::space(), Robot\Map\Cell::column(), Robot\Map\Cell::space()],
@@ -388,6 +388,6 @@ class RobotTest extends TestCase
         $this->assertEquals(Robot\Direction::north(), $robot->getDirection());
         $this->assertEquals([new Robot\Location(1, 1), new Robot\Location(2, 1), new Robot\Location(2, 0)], $robot->getVisited());
         $this->assertEquals([], $robot->getCleaned());
-        $this->assertEquals(3, $robot->getBattery());
+        $this->assertEquals(4, $robot->getBattery());
     }
 }

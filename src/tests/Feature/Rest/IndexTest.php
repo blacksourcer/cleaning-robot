@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Tests\Feature;
+namespace App\Tests\Feature\Rest;
 
 use App\Tests\TestCase;
 
 /**
  * Class RobotTest
  *
- * @package App\Tests\Feature
+ * @package App\Tests\Feature\Rest
  */
 class IndexTest extends TestCase
 {
