@@ -10,4 +10,4 @@
 
 $router->get('/', 'IndexController@index');
 
-$router->post('/robot/clean', 'RobotController@clean');
+$router->post('/robot/run', 'RobotController@run');

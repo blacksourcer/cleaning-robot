@@ -1,26 +1,16 @@
 <?php
 
-namespace App\Tests\Feature\Command\Robot;
+namespace App\Tests\Feature\Robot\Command;
 
-use App\Tests\TestCase;
+use App\Tests\Feature\RobotTest;
 
 /**
- * Class RobotTest
+ * Class RunTest
  *
- * @package App\Tests\Feature\Command\Robot
+ * @package App\Tests\Feature\Robot\Command
  */
-class RunTest extends TestCase
+class RunTest extends RobotTest
 {
-    /**
-     * @return string[][]
-     */
-    public function filesDataProvider()
-    {
-        return [
-            "Test1" => [TESTS_DATA_DIR . "/test1.json", TESTS_DATA_DIR . "/test1_result.json"],
-            "Test2" => [TESTS_DATA_DIR . "/test2.json", TESTS_DATA_DIR . "/test2_result.json"],
-        ];
-    }
 
     /**
      * @dataProvider filesDataProvider
@@ -30,7 +20,7 @@ class RunTest extends TestCase
      *
      * @return void
      *
-     * @throws \ErrorException
+     * @throws \Throwable
      */
     public function testRun(string $sourceFile, string $resultFile)
     {
@@ -38,21 +28,19 @@ class RunTest extends TestCase
             throw new \ErrorException("Failed to copy source file \"$sourceFile\" to \"$sourceTempFile\"");
         }
 
-        if (!$expectedResult = \json_decode(\file_get_contents($resultFile), true)) {
-            throw new \ErrorException("Failed to read expected result from \"$resultFile\"");
-        }
-
         $resultTempFile = TESTS_TMP_DIR . "/result.json";
 
         \exec(ROOT_DIR . "/artisan robot:run \"$sourceTempFile\" \"$resultTempFile\"", $output, $exitCode);
 
         $this->assertEquals(0, $exitCode, "Invalid exit code $exitCode, command output was:\n" . implode("\n", $output));
-        $this->assertTrue(\is_file($resultTempFile));
 
         /**
          * There are is no requirement regarding the order the cells appear in visited/cleaned sections, hence "canonicalize" = true
          */
-        $this->assertEquals($expectedResult, \json_decode(\file_get_contents($resultTempFile), true), '', 0, 10, true);
+        $this->assertEqualsCanonicalize(
+            \json_decode(\file_get_contents($resultFile), true),
+            \json_decode(\file_get_contents($resultTempFile), true)
+        );
     }
 
     /**
