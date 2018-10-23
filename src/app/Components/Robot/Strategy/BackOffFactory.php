@@ -16,7 +16,7 @@ class BackOffFactory
     /**
      * @return StrategyInterface
      */
-    public function create(): StrategyInterface
+    public static function create(): StrategyInterface
     {
         return new Strategy(
             new Program([

@@ -7,12 +7,13 @@ use App\Components\Robot\Location;
 use App\Components\Robot\Direction;
 use App\Components\Robot\Program;
 
-use App\Components\Robot\Exception;
-use App\Components\Robot\RuntimeException;
-use App\Components\Robot\Exception\StateException;
-use App\Components\Robot\Exception\LocationException;
-use App\Components\Robot\Exception\BatteryException;
 use App\Components\Robot\StrategyInterface;
+
+use App\Components\Robot\Exceptions\Exception;
+use App\Components\Robot\Exceptions\RuntimeException;
+use App\Components\Robot\Exceptions\StateException;
+use App\Components\Robot\Exceptions\LocationException;
+use App\Components\Robot\Exceptions\BatteryException;
 
 /**
  * Class Robot

@@ -26,7 +26,7 @@ class Cell extends Enum
      */
     public static function space(): Cell
     {
-        return static::parse("S");
+        return static::tryParse("S");
     }
 
     /**
@@ -34,6 +34,6 @@ class Cell extends Enum
      */
     public static function column(): Cell
     {
-        return static::parse("C");
+        return static::tryParse("C");
     }
 }

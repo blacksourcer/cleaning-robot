@@ -17,6 +17,6 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\Robot\RunCommand::class
+        Commands\Robot\Run::class
     ];
 }

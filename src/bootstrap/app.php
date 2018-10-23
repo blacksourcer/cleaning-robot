@@ -2,6 +2,12 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
+defined("ROOT_DIR") || define("ROOT_DIR", __DIR__ . "/..");
+defined("APP_DIR") || define("APP_DIR", ROOT_DIR . "/app");
+defined("TESTS_DIR") || define("TESTS_DIR", ROOT_DIR . "/tests");
+defined("TESTS_DATA_DIR") || define("TESTS_DATA_DIR", TESTS_DIR . "/data");
+defined("TESTS_TMP_DIR") || define("TESTS_TMP_DIR", TESTS_DIR . "/tmp");
+
 try {
     (new Dotenv\Dotenv(__DIR__.'/../'))->load();
 } catch (Dotenv\Exception\InvalidPathException $e) {

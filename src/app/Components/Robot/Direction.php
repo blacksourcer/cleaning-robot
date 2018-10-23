@@ -28,7 +28,7 @@ class Direction extends Enum
      */
     public static function north(): Direction
     {
-        return static::parse("N");
+        return static::tryParse("N");
     }
 
     /**
@@ -36,7 +36,7 @@ class Direction extends Enum
      */
     public static function east(): Direction
     {
-        return static::parse("E");
+        return static::tryParse("E");
     }
 
     /**
@@ -44,7 +44,7 @@ class Direction extends Enum
      */
     public static function south(): Direction
     {
-        return static::parse("S");
+        return static::tryParse("S");
     }
 
     /**
@@ -52,7 +52,7 @@ class Direction extends Enum
      */
     public static function west(): Direction
     {
-        return static::parse("W");
+        return static::tryParse("W");
     }
 
     /**

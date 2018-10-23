@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Components\Robot;
+namespace App\Exceptions;
 
 /**
  * Class Exception
  *
- * @package App\Components\Robot
+ * @package App\Exceptions
  */
 class Exception extends \ErrorException
 {

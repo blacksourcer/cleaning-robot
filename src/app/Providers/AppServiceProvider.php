@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(Robot::class, function () {
-            return new Robot();
+            return new Robot(Robot\Strategy\BackOffFactory::create());
         });
     }
 }

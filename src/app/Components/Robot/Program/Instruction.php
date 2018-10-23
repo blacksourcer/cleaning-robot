@@ -29,7 +29,7 @@ class Instruction extends Enum
      */
     public static function turnLeft(): Instruction
     {
-        return static::parse("TL");
+        return static::tryParse("TL");
     }
 
     /**
@@ -37,7 +37,7 @@ class Instruction extends Enum
      */
     public static function turnRight(): Instruction
     {
-        return static::parse("TR");
+        return static::tryParse("TR");
     }
 
     /**
@@ -45,7 +45,7 @@ class Instruction extends Enum
      */
     public static function advance(): Instruction
     {
-        return static::parse("A");
+        return static::tryParse("A");
     }
 
     /**
@@ -53,7 +53,7 @@ class Instruction extends Enum
      */
     public static function back(): Instruction
     {
-        return static::parse("B");
+        return static::tryParse("B");
     }
 
     /**
@@ -61,6 +61,6 @@ class Instruction extends Enum
      */
     public static function clean(): Instruction
     {
-        return static::parse("C");
+        return static::tryParse("C");
     }
 }

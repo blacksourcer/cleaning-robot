@@ -7,8 +7,9 @@ use App\Components\Robot\Location;
 use App\Components\Robot\Direction;
 use App\Components\Robot\Program;
 
-use App\Components\Robot\Exception\BatteryException;
-use App\Components\Robot\Exception\LocationException;
+use App\Components\Robot\Exceptions\Exception;
+use App\Components\Robot\Exceptions\BatteryException;
+use App\Components\Robot\Exceptions\LocationException;
 
 /**
  * Interface RobotInterface
@@ -69,6 +70,7 @@ interface RobotInterface
      *
      * @throws BatteryException
      * @throws LocationException
+     * @throws Exception
      */
     public function run(Program $program): RobotInterface;
 }

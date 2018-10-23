@@ -2,6 +2,8 @@
 
 namespace App\Types;
 
+use App\Exceptions\ParseException;
+
 /**
  * Class Enum
  *
@@ -36,19 +38,24 @@ class Enum
 
     /**
      * @param string $value
+     *
+     * @throws ParseException
      */
     private function __construct(string $value)
     {
         if (!static::isValid($value)) {
-            throw new \InvalidArgumentException("Value \"" . var_export($value, true) . "\"is not valid for the enum \"" . static::class . "\"");
+            throw new ParseException("Value \"" . var_export($value, true) . "\"is not valid for the enum \"" . static::class . "\"");
         }
 
         $this->value = $value;
     }
 
     /**
-     * @param string$value
+     * @param string $value
+     *
      * @return static
+     *
+     * @throws ParseException
      */
     protected static function getInstance(string $value)
     {
@@ -63,7 +70,10 @@ class Enum
 
     /**
      * @param string $value
+     *
      * @return static
+     *
+     * @throws ParseException
      */
     public static function parse(string $value)
     {
@@ -78,7 +88,7 @@ class Enum
     {
         try {
             return static::parse($value);
-        } catch (\InvalidArgumentException $ex) {
+        } catch (ParseException $ex) {
             return null;
         }
     }
