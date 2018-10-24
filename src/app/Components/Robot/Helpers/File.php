@@ -129,9 +129,28 @@ class File
             return ["X" => $location->getX(), "Y" => $location->getY()];
         };
 
+        /**
+         * Not sure if it is necessary but in sample files visited/cleaned cells are sorted in this manner (probably)
+         *
+         * @param Location $a
+         * @param Location $b
+         * @return int
+         */
+        $locationComparator = function (Location $a, Location $b) {
+            return (0 === $xCompare = $a->getX() - $b->getX())
+                ? $a->getY() - $b->getY()
+                : $xCompare;
+        };
+
+        $visited = $robot->getVisited();
+        $cleaned = $robot->getCleaned();
+
+        usort($visited, $locationComparator);
+        usort($cleaned, $locationComparator);
+
         return [
-            "visited" => array_map($locationMapper, $robot->getVisited()),
-            "cleaned" => array_map($locationMapper, $robot->getCleaned()),
+            "visited" => array_map($locationMapper, $visited),
+            "cleaned" => array_map($locationMapper, $cleaned),
             "final" => array_merge($locationMapper($robot->getLocation()), [
                 "facing" => (string)$robot->getDirection(),
             ]),

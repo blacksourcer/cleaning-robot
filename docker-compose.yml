@@ -6,12 +6,19 @@ services:
     build:
       context: ./docker/app
       args:
-        UID: ${UID:-1000}
-        GID: ${GID:-1000}
+        UID: ${uid:-1000}
+        GID: ${gid:-1000}
     working_dir: /var/www
-    user: "${UID:-1000}:${GID:-1000}"
+    user: "${uid:-1000}:${gid:-1000}"
     volumes:
     - ./src:/var/www
+
+  composer:
+    image: composer
+    command: install
+    user: "${uid:-1000}:${gid:-1000}"
+    volumes:
+    - ./src:/app
 
   # The Web Server
   nginx:

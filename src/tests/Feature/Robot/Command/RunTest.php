@@ -33,11 +33,7 @@ class RunTest extends RobotTest
         \exec(ROOT_DIR . "/artisan robot:run \"$sourceTempFile\" \"$resultTempFile\"", $output, $exitCode);
 
         $this->assertEquals(0, $exitCode, "Invalid exit code $exitCode, command output was:\n" . implode("\n", $output));
-
-        /**
-         * There are is no requirement regarding the order the cells appear in visited/cleaned sections, hence "canonicalize" = true
-         */
-        $this->assertEqualsCanonicalize(
+        $this->assertEquals(
             \json_decode(\file_get_contents($resultFile), true),
             \json_decode(\file_get_contents($resultTempFile), true)
         );

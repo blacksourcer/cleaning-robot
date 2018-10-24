@@ -52,7 +52,7 @@ class RunTest extends RobotTest
 
         $this->assertEquals(200, $this->response->getStatusCode());
         $this->assertEquals("application/json", $this->response->headers->get("Content-Type"));
-        $this->assertEqualsCanonicalize(
+        $this->assertEquals(
             \json_decode(\file_get_contents($resultFile), true),
             \json_decode($this->response->getContent(), true)
         );

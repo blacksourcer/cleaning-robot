@@ -111,6 +111,6 @@ class Run extends Command
             return;
         }
 
-        $this->info("Done");
+        $this->info("Done, see \"$resultFile\"");
     }
 }
